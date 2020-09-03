@@ -9,7 +9,7 @@
     ],
     "repositories": [
         {
-            "type": "composer",
+            "type": "vcs",
             "url": "https://github.com/ghanu119/findinset_relation"
         }
     ],

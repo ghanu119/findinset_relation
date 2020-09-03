@@ -1,0 +1,19 @@
+{
+    "name": "ghanuz/relations",
+    "description": "TO create relationships with comma sperated fields using Eloquent Relationships",
+    "authors": [
+        {
+            "name": "Ghanu Z",
+            "email": "ghanshyamashra@gmail.com"
+        }
+    ],
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "GhanuZ\\Relations\\": "packages/ghanuz/Relations/src/"
+        }
+    },
+    "require": {}
+}

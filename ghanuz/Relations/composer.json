@@ -7,7 +7,7 @@
             "email": "ghanshyamashra@gmail.com"
         }
     ],
-    "type": "library",
+    "type": "composer",
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,

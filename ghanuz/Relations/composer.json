@@ -19,7 +19,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "GhanuZ\\Relations\\": "packages/ghanuz/Relations/src/"
+            "GhanuZ\\Relations\\": "src/"
         }
     },
     "require": {}

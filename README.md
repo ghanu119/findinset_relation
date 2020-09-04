@@ -4,8 +4,7 @@ Set eloquent relationships with table that contains comma separated values as a 
 # 1.
 You have to extends `GhanuZ\Model` class instead of `Illuminate\Database\Eloquent\Model`
 
-`
-<?php
+`<?php
 
 namespace App;
 
@@ -14,9 +13,7 @@ use GhanuZ\Model;
 class Test extends Model
 {
     //
-}
-
-`
+}`
 
 # 2. To create `HasMany` Relation you have to write as :
 

@@ -4,7 +4,8 @@ Set eloquent relationships with table that contains comma separated values as a 
 # 1.
 You have to extends `GhanuZ\Model` class instead of `Illuminate\Database\Eloquent\Model`
 
-`<?php
+```
+<?php
 
 namespace App;
 
@@ -13,15 +14,16 @@ use GhanuZ\Model;
 class Test extends Model
 {
     //
-}`
+}
+```
 
 # 2. To create `HasMany` Relation you have to write as :
 
-`
+```
 public function order_product (){
     return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY);
 }
-`
+```
 
 # 3. You can also pass 4th argumaent to detect position in FIND_IN_SET :
 If you have an `address` table schema and stored `city_ids` like `city_id,state_id,country_id`.
@@ -37,8 +39,8 @@ Like, for `country_id`:
 `select * from address where FIND_IN_CITY( 5, city_ids ) = 3;// Here $index = 3`
 
 ## 4th argument is optional 
-`
+```
 public function order_product (){
     return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
 }
-`
+```

@@ -1,9 +1,9 @@
 <?php
 
-namespace GhanuZ\Relations;
+namespace GhanuZ;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
-use GhanuZ\Relations\FindInSet\FindInSetRelationTrait;
+use GhanuZ\FindInSet\FindInSetRelationTrait;
 
 class Model extends LaravelModel {
     use FindInSetRelationTrait;

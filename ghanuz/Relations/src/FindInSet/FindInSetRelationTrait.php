@@ -1,5 +1,5 @@
 <?php
-namespace GhanuZ\Relations\FindInSet;
+namespace GhanuZ\FindInSet;
 
 trait FindInSetRelationTrait {
      /**

@@ -16,6 +16,47 @@ class Test extends Model
     //
 }
 ```
+## You can also use traits instead of extend Model class 
+Like in Laravel, `Users` model not extending `Model` class.
+So you can use `trait`.
+`GhanuZ\FindInSet\FindInSetRelationTrait`
+
+Example:
+```
+<?php
+
+namespace App;
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use GhanuZ\FindInSet\FindInSetRelationTrait;
+
+class User extends Authenticatable
+{
+    use Notifiable, FindInSetRelationTrait;
+
+    public function city ()
+    {
+        return $this->FindInSetOne( 'App\City', 'city_ids', 'id', 1);
+    }
+
+    public function state ()
+    {
+        return $this->FindInSetOne( 'App\State', 'city_ids', 'id', 2);
+    }
+
+    public function country ()
+    {
+        return $this->FindInSetOne( 'App\Country', 'city_ids', 'id', 3);
+    }
+
+    public function hobbies ()
+    {
+        return $this->FindInSetMany( 'App\Hobbies', 'hobbies_id', 'id');
+    }
+    
+}
+```
 
 # 2. To create `HasMany` Relation you have to write as :
 
@@ -25,7 +66,15 @@ public function order_product (){
 }
 ```
 
-# 3. You can also pass 4th argumaent to detect position in FIND_IN_SET :
+# 3. To create `HasOne` Relation you have to write as :
+
+```
+public function order_product (){
+    return $this->FindInSetOne( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY);
+}
+```
+
+# 4. You can also pass 4th argumaent to detect position in FIND_IN_SET :
 If you have an `address` table schema and stored `city_ids` like `city_id,state_id,country_id`.
 
 
@@ -44,3 +93,5 @@ public function order_product (){
     return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
 }
 ```
+
+#

@@ -54,11 +54,11 @@ class User extends Authenticatable
     {
         return $this->FindInSetMany( 'App\Hobbies', 'hobbies_id', 'id');
     }
-    
+
 }
 ```
 
-# 2. To create `HasMany` Relation you have to write as :
+## To create `HasMany` Relation you have to write as :
 
 ```
 public function order_product (){
@@ -66,7 +66,7 @@ public function order_product (){
 }
 ```
 
-# 3. To create `HasOne` Relation you have to write as :
+## To create `HasOne` Relation you have to write as :
 
 ```
 public function order_product (){
@@ -74,7 +74,7 @@ public function order_product (){
 }
 ```
 
-# 4. You can also pass 4th argumaent to detect position in FIND_IN_SET :
+## You can also pass 4th argumaent to detect position in FIND_IN_SET :
 If you have an `address` table schema and stored `city_ids` like `city_id,state_id,country_id`.
 
 
@@ -93,5 +93,3 @@ public function order_product (){
     return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
 }
 ```
-
-#

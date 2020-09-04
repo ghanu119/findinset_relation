@@ -1,5 +1,5 @@
 <?php
-namespace GhanuZ\Relations\FindInSet;
+namespace GhanuZ\FindInSet;
 
 use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Database\Eloquent\Builder;

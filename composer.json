@@ -1,6 +1,7 @@
 {
     "name": "ghanuz/relations",
-    "description": "TO create relationships with comma sperated fields using Eloquent Relationships",
+    "description": "To create a Eloquent relationships with comma separated foreign key or using a FIND_IN_SET mysql function.",
+    "keywords": ["laravel", "eloquent", "relationship", "comma-separate", "find_in_set"],
     "authors": [
         {
             "name": "Ghanu Z",
@@ -16,5 +17,10 @@
             "GhanuZ\\": "ghanuz/Relations/src/"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "require-dev": {
+        "laravel/laravel": ">=5.3.*"
+    }
 }

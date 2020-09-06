@@ -1,5 +1,5 @@
 {
-    "name": "ghanuz/relations",
+    "name": "ghanuz/eloquent-relations",
     "description": "To create a Eloquent relationships with comma separated foreign key or using a FIND_IN_SET mysql function.",
     "keywords": ["laravel", "eloquent", "relationship", "comma-separate", "find_in_set"],
     "authors": [

@@ -1,6 +1,11 @@
 # findinset_relation
 Set eloquent relationships with table that contains comma separated values as a foreign key
 
+# Installation
+Get package using composer  :
+
+`composer require ghanuz/relations`
+
 # 1.
 You have to extends `GhanuZ\Model` class instead of `Illuminate\Database\Eloquent\Model`
 

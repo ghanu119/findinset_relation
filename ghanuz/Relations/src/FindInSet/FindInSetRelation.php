@@ -7,17 +7,9 @@ use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use DB;
 
-class FindInSetRelation extends HasMany{
+class FindInSetRelation extends HasMany {
 
-    private $index;
-
-    public function __construct(Builder $query, Model $parent, $foreignKey, $localKey, $index = null){
-        $this->index = $index;
-
-        parent::__construct($query, $parent, $foreignKey, $localKey);
-    }
-    
-    /**
+       /**
      * Set the base constraints on the relation query.
      *
      * @return void
@@ -25,15 +17,34 @@ class FindInSetRelation extends HasMany{
     public function addConstraints()
     {
         if (static::$constraints) {
-            if( is_null( $this->index ) ){
-                
-                $this->query->whereRaw( DB::Raw( 'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")'));
-            }else{
-
-                $this->query->whereRaw( DB::Raw( 'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'") = ' . $this->index));
-            }
-            
-            // $this->query->orWhereNull($this->foreignKey);
+            $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
         }
+    }
+
+        /**
+     * Set the constraints for an eager load of the relation.
+     *
+     * @param  array  $models
+     * @return void
+     */
+    public function addEagerConstraints(array $models)
+    {
+        $this->query->addSelect('*', DB::raw('"' . $this->getKeys($models, $this->localKey)[0] . '" as __id') );
+        $this->query->whereRaw( 'FIND_IN_SET(' . $this->foreignKey . ', "' .$this->getKeys($models, $this->localKey)[0] .'" )');
+    }
+
+    /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @return array
+     */
+    protected function buildDictionary(Collection $results)
+    {
+        $foreign = '__'.$this->getForeignKeyName();
+
+        return $results->mapToDictionary(function ($result) use ($foreign) {
+            return [$result->{$foreign} => $result];
+        })->all();
     }
 }

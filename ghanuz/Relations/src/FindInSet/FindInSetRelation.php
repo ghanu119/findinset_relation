@@ -9,7 +9,15 @@ use DB;
 
 class FindInSetRelation extends HasMany {
 
-       /**
+    private $index;
+
+    public function __construct(Builder $query, Model $parent, $foreignKey, $localKey, $index = null){
+        $this->index = $index;
+
+        parent::__construct($query, $parent, $foreignKey, $localKey);
+    }
+    
+    /**
      * Set the base constraints on the relation query.
      *
      * @return void
@@ -48,9 +56,15 @@ class FindInSetRelation extends HasMany {
         $localKeyArr = explode(',', $localKey );
         return $results->mapToDictionary(function ($result) use ($foreign, $localKeyArr, $localKey) {
             
-            if( in_array( $result->{$foreign}, $localKeyArr )){
-                 
-                return [$localKey => $result];
+            if( is_null( $this->index ) ){
+                if( in_array( $result->{$foreign}, $localKeyArr )){
+                    return [$localKey => $result];    
+                }
+            }else{
+                $i = $this->index - 1 ;
+                if( $i > 0 && !empty( $localKeyArr[ $i ] ) && $result->{$foreign} == $localKeyArr[ $i ] ){
+                    return [$localKey => $result];    
+                }
             }
             return [$this->getDictionaryKey($result->{$foreign}) => $result];
         })->all();

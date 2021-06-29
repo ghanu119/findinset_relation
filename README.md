@@ -79,7 +79,7 @@ public function order_product (){
 }
 ```
 
-## You can also pass 4th argumaent to detect position in FIND_IN_SET :
+## You can also pass 4th argument to detect position in FIND_IN_SET :
 If you have an `address` table schema and stored `city_ids` like `city_id,state_id,country_id`.
 
 

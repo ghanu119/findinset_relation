@@ -17,6 +17,7 @@ class FindInSetRelation extends HasMany {
     public function addConstraints()
     {
         if (static::$constraints) {
+            
             $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
         }
     }
@@ -29,8 +30,9 @@ class FindInSetRelation extends HasMany {
      */
     public function addEagerConstraints(array $models)
     {
-        $this->query->addSelect('*', DB::raw('"' . $this->getKeys($models, $this->localKey)[0] . '" as __id') );
-        $this->query->whereRaw( 'FIND_IN_SET(' . $this->foreignKey . ', "' .$this->getKeys($models, $this->localKey)[0] .'" )');
+        
+        // $this->query->addSelect('*', DB::raw('"' . $this->getKeys($models, $this->localKey)[0] . '" as __id') );
+        $this->query->whereRaw( 'FIND_IN_SET(' . $this->foreignKey . ', "' . implode( ',', $this->getKeys($models, $this->localKey) ) .'" )');
     }
 
     /**
@@ -39,12 +41,37 @@ class FindInSetRelation extends HasMany {
      * @param  \Illuminate\Database\Eloquent\Collection  $results
      * @return array
      */
-    protected function buildDictionary(Collection $results)
+    protected function buildDictionary(Collection $results, $localKey = null)
     {
-        $foreign = '__'.$this->getForeignKeyName();
+        $foreign = $this->getForeignKeyName();
 
-        return $results->mapToDictionary(function ($result) use ($foreign) {
-            return [$result->{$foreign} => $result];
+        $localKeyArr = explode(',', $localKey );
+        return $results->mapToDictionary(function ($result) use ($foreign, $localKeyArr, $localKey) {
+            
+            if( in_array( $result->{$foreign}, $localKeyArr )){
+                 
+                return [$localKey => $result];
+            }
+            return [$this->getDictionaryKey($result->{$foreign}) => $result];
         })->all();
+    }
+
+    protected function matchOneOrMany(array $models, Collection $results, $relation, $type)
+    {
+        // $dictionary = $this->buildDictionary($results);
+
+        // Once we have the dictionary we can simply spin through the parent models to
+        // link them up with their children using the keyed dictionary to make the
+        // matching very convenient and easy work. Then we'll just return them.
+        foreach ($models as $model) {
+            $dictionary = $this->buildDictionary($results, $model->getAttribute($this->localKey));
+            if (isset($dictionary[$key = $this->getDictionaryKey( $model->getAttribute($this->localKey) )])) {
+                $model->setRelation(
+                    $relation, $this->getRelationValue($dictionary, $key, $type)
+                );
+            }
+        }
+
+        return $models;
     }
 }

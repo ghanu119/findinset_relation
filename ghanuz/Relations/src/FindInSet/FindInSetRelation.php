@@ -4,10 +4,10 @@ namespace GhanuZ\FindInSet;
 use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use DB;
 
-class FindInSetRelation extends HasMany {
+abstract class FindInSetRelation extends HasOneOrMany {
 
     private $index;
 
@@ -25,8 +25,12 @@ class FindInSetRelation extends HasMany {
     public function addConstraints()
     {
         if (static::$constraints) {
-            
-            $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
+            if( !is_null( $this->index  ) ){
+                $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'") = ' . $this->index );
+            }else{
+
+                $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
+            }
         }
     }
 
@@ -52,7 +56,6 @@ class FindInSetRelation extends HasMany {
     protected function buildDictionary(Collection $results, $localKey = null)
     {
         $foreign = $this->getForeignKeyName();
-
         $localKeyArr = explode(',', $localKey );
         return $results->mapToDictionary(function ($result) use ($foreign, $localKeyArr, $localKey) {
             
@@ -72,6 +75,7 @@ class FindInSetRelation extends HasMany {
 
     protected function matchOneOrMany(array $models, Collection $results, $relation, $type)
     {
+        
         // $dictionary = $this->buildDictionary($results);
 
         // Once we have the dictionary we can simply spin through the parent models to

@@ -4,10 +4,9 @@ namespace GhanuZ\FindInSet;
 use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use DB;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
-class FindInSetRelation extends HasMany {
+abstract class FindInSetRelation extends HasOneOrMany {
 
     private $index;
 

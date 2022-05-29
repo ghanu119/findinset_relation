@@ -13,9 +13,11 @@ class FindInSetOne extends FindInSetRelation {
      */
     public function getResults()
     {
-        return ! is_null($this->getParentKey())
-                ? $this->query->get()
-                : $this->related->newCollection();
+        if (is_null($this->getParentKey())) {
+            return $this->getDefaultFor($this->parent);
+        }
+
+        return $this->query->first() ?: $this->getDefaultFor($this->parent);
     }
 
     /**

@@ -1,12 +1,19 @@
 <?php
 namespace GhanuZ\FindInSet;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Concerns\CanBeOneOfMany;
+use Illuminate\Database\Eloquent\Relations\Concerns\ComparesRelatedModels;
+use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
+use Illuminate\Database\Query\JoinClause;
 
 class FindInSetOne extends FindInSetRelation {
 
-      /**
+    use ComparesRelatedModels, CanBeOneOfMany, SupportsDefaultModels;
+
+    /**
      * Get the results of the relationship.
      *
      * @return mixed
@@ -47,5 +54,63 @@ class FindInSetOne extends FindInSetRelation {
     public function match(array $models, Collection $results, $relation)
     {
         return $this->matchOne($models, $results, $relation);
+    }
+
+    /**
+     * Add constraints for inner join subselect for one of many relationships.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $column
+     * @param  string|null  $aggregate
+     * @return void
+     */
+    public function addOneOfManySubQueryConstraints(Builder $query, $column = null, $aggregate = null)
+    {
+        $query->addSelect($this->foreignKey);
+    }
+
+    /**
+     * Get the columns that should be selected by the one of many subquery.
+     *
+     * @return array|string
+     */
+    public function getOneOfManySubQuerySelectColumns()
+    {
+        return $this->foreignKey;
+    }
+
+    /**
+     * Add join query constraints for one of many relationships.
+     *
+     * @param  \Illuminate\Database\Query\JoinClause  $join
+     * @return void
+     */
+    public function addOneOfManyJoinSubQueryConstraints(JoinClause $join)
+    {
+        $join->on($this->qualifySubSelectColumn($this->foreignKey), '=', $this->qualifyRelatedColumn($this->foreignKey));
+    }
+
+    /**
+     * Make a new related instance for the given model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $parent
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function newRelatedInstanceFor(Model $parent)
+    {
+        return $this->related->newInstance()->setAttribute(
+            $this->getForeignKeyName(), $parent->{$this->localKey}
+        );
+    }
+
+    /**
+     * Get the value of the model's foreign key.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return mixed
+     */
+    protected function getRelatedKeyFrom(Model $model)
+    {
+        return $model->getAttribute($this->getForeignKeyName());
     }
 }

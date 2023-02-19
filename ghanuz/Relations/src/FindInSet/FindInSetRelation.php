@@ -24,8 +24,11 @@ abstract class FindInSetRelation extends HasOneOrMany {
     public function addConstraints()
     {
         if (static::$constraints) {
-
-            $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
+            $parentKey = $this->getParentKey();
+            if( is_array( $parentKey ) ){
+                $parentKey = implode(',', $parentKey );
+            }
+            $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' . $parentKey .'")');
         }
     }
 

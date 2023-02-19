@@ -98,3 +98,42 @@ public function order_product (){
     return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
 }
 ```
+
+## Added support of Array cast from version v3.
+
+From version v3, you can also use custom casting provided by the Laravel framework to manipulate comma deligated value into array. If you are using casts of Laravel to convert the string with comma value into Array then this package also support it to retrive the related table data.
+
+### Example
+
+```
+
+/**
+* The attributes that should be cast.
+*
+* @var array<string, string>
+*/
+protected $casts = [
+    'FIELD' => CUSTOM_CLASS::class,
+];
+
+
+/**
+*
+* To retrive array of relational tables 
+*
+*/
+public function order_products ()
+{
+    return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
+}
+
+/**
+*
+* To retrive single data of the relational table
+*
+*/
+public function order_product ()
+{
+    return $this->FindInSetOne( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
+}
+```

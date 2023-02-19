@@ -15,7 +15,7 @@ abstract class FindInSetRelation extends HasOneOrMany {
 
         parent::__construct($query, $parent, $foreignKey, $localKey);
     }
-    
+
     /**
      * Set the base constraints on the relation query.
      *
@@ -24,7 +24,7 @@ abstract class FindInSetRelation extends HasOneOrMany {
     public function addConstraints()
     {
         if (static::$constraints) {
-            
+
             $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' .$this->getParentKey() .'")');
         }
     }
@@ -37,9 +37,14 @@ abstract class FindInSetRelation extends HasOneOrMany {
      */
     public function addEagerConstraints(array $models)
     {
-        
+        $localKeys = $this->getKeys($models, $this->localKey);
+        foreach( $localKeys as $key => $value ){
+            if( is_array( $value ) ){
+                $localKeys[ $key ] = implode(",", $value);
+            }
+        }
         // $this->query->addSelect('*', DB::raw('"' . $this->getKeys($models, $this->localKey)[0] . '" as __id') );
-        $this->query->whereRaw( 'FIND_IN_SET(' . $this->foreignKey . ', "' . implode( ',', $this->getKeys($models, $this->localKey) ) .'" )');
+        $this->query->whereRaw( 'FIND_IN_SET(' . $this->foreignKey . ', "' . implode( ',', $localKeys ) .'" )');
     }
 
     /**
@@ -52,17 +57,23 @@ abstract class FindInSetRelation extends HasOneOrMany {
     {
         $foreign = $this->getForeignKeyName();
 
-        $localKeyArr = explode(',', $localKey );
+        if( is_array( $localKey ) ){
+            $localKeyArr = $localKey;
+            $localKey = implode( ',', $localKey );
+        }else{
+
+            $localKeyArr = explode(',', $localKey );
+        }
         return $results->mapToDictionary(function ($result) use ($foreign, $localKeyArr, $localKey) {
-            
+
             if( is_null( $this->index ) ){
                 if( in_array( $result->{$foreign}, $localKeyArr )){
-                    return [$localKey => $result];    
+                    return [$localKey => $result];
                 }
             }else{
                 $i = $this->index - 1 ;
                 if( $i > 0 && !empty( $localKeyArr[ $i ] ) && $result->{$foreign} == $localKeyArr[ $i ] ){
-                    return [$localKey => $result];    
+                    return [$localKey => $result];
                 }
             }
             return [$this->getDictionaryKey($result->{$foreign}) => $result];
@@ -77,8 +88,12 @@ abstract class FindInSetRelation extends HasOneOrMany {
         // link them up with their children using the keyed dictionary to make the
         // matching very convenient and easy work. Then we'll just return them.
         foreach ($models as $model) {
-            $dictionary = $this->buildDictionary($results, $model->getAttribute($this->localKey));
-            if (isset($dictionary[$key = $this->getDictionaryKey( $model->getAttribute($this->localKey) )])) {
+            $localKey = $model->getAttribute($this->localKey);
+            if( is_array( $localKey ) ){
+                $localKey = implode(',', $localKey );
+            }
+            $dictionary = $this->buildDictionary($results, $localKey );
+            if (isset($dictionary[$key = $this->getDictionaryKey( $localKey )])) {
                 $model->setRelation(
                     $relation, $this->getRelationValue($dictionary, $key, $type)
                 );

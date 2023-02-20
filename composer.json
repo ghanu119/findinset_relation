@@ -2,7 +2,7 @@
     "name": "ghanuz/eloquent-relations",
     "version": "3.5",
     "description": "To create a Eloquent relationships with comma separated foreign key or using a FIND_IN_SET mysql function.",
-    "keywords": ["laravel", "eloquent", "relationship", "comma-separate", "find_in_set"],
+    "keywords": ["laravel", "eloquent", "relationship", "comma-separate", "find_in_set", "JSON", "cast support","JSON array cast", "custom array cast"],
     "authors": [
         {
             "name": "Ghanu Z",

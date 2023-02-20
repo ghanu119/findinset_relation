@@ -103,7 +103,7 @@ public function order_product (){
 
 This 5th argument is optional. When you have a JSON string in field and want to apply the relation on the specific field of your JSON object then you have to define the `field` name of the JSON string using this argument.
 
-[Detailed Explanation](#json-support)
+[Detailed Explanation](#json-support--v35-)
 
 ## Added support of Array cast from version v3.
 

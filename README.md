@@ -99,6 +99,12 @@ public function order_product (){
 }
 ```
 
+## 5th Argument related to JSON
+
+This 5th argument is optional. When you have a JSON string in field and want to apply the relation on the specific field of your JSON object then you have to define the `field` name of the JSON string using this argument.
+
+[Detailed Explanation](#json-support)
+
 ## Added support of Array cast from version v3.
 
 From version v3, you can also use custom casting provided by the Laravel framework to manipulate comma deligated value into array. If you are using casts of Laravel to convert the string with comma value into Array then this package also support it to retrive the related table data.
@@ -135,5 +141,95 @@ public function order_products ()
 public function order_product ()
 {
     return $this->FindInSetOne( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number);
+}
+```
+
+# Json Support ( V3.5 )
+
+Now this package can also handle specific field from the `JSON` field that can be converted into `array` using the `cast` feature of the Laravel.
+
+### JSON string in your database
+
+```
+// Field Name: json_field
+[
+  {
+    "id": "1",
+    "name": "One"
+  },
+  {
+    "id": "1",
+    "name": "Two"
+  }
+]
+
+```
+And another JSON like:
+
+```
+// Field Name: json_field
+[
+  {
+    "id": "1,2",
+    "name": "One and two"
+  },
+  {
+    "id": "3,4,5",
+    "name": "Three, Four and Five"
+  }
+]
+
+```
+## To create `HasMany` Relation with JSON field you have to write as :
+
+Where `JSON_FIELD_NAME` will be `id` as per above JSON value.
+
+```
+public function order_product (){
+    return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, JSON_FIELD_NAME);
+}
+```
+
+## To create `HasOne` Relation you have to write as :
+
+```
+public function order_product (){
+    return $this->FindInSetOne( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, JSON_FIELD_NAME));
+}
+```
+Then you can load relation with the `id` field of this JSON string using following:
+
+
+Model.php
+```
+
+/**
+* The attributes that should be cast.
+*
+* @var array<string, string>
+*/
+protected $casts = [
+    'json_field' => 'array',
+];
+
+
+/**
+*
+* To retrive array of relational tables with the JSON field
+*
+*/
+public function order_products ()
+{
+    return $this->FindInSetMany( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number, 'id');
+}
+
+/**
+*
+* To retrive single data of the relational table with the JSON field
+*
+*/
+public function order_product ()
+{
+    return $this->FindInSetOne( CLASS_NAME, FOREIGN_KEY, LOCAL_KEY, Number, 'id');
 }
 ```

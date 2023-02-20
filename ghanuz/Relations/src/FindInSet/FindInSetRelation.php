@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 abstract class FindInSetRelation extends HasOneOrMany {
 
     private $index;
+    private $jsonColumn;
 
-    public function __construct(Builder $query, Model $parent, $foreignKey, $localKey, $index = null){
+    public function __construct(Builder $query, Model $parent, $foreignKey, $localKey, $index = null, $jsonColumn = null){
         $this->index = $index;
+        $this->jsonColumn = $jsonColumn;
 
         parent::__construct($query, $parent, $foreignKey, $localKey);
     }
@@ -26,6 +28,9 @@ abstract class FindInSetRelation extends HasOneOrMany {
         if (static::$constraints) {
             $parentKey = $this->getParentKey();
             if( is_array( $parentKey ) ){
+                if( !is_null( $this->jsonColumn ) ){
+                    $parentKey = array_column( $parentKey, $this->jsonColumn );
+                }
                 $parentKey = implode(',', $parentKey );
             }
             $this->query->whereRaw(  'FIND_IN_SET(' . $this->foreignKey . ',"' . $parentKey .'")');
@@ -43,6 +48,9 @@ abstract class FindInSetRelation extends HasOneOrMany {
         $localKeys = $this->getKeys($models, $this->localKey);
         foreach( $localKeys as $key => $value ){
             if( is_array( $value ) ){
+                if( !is_null( $this->jsonColumn ) ){
+                    $value = array_column( $value, $this->jsonColumn );
+                }
                 $localKeys[ $key ] = implode(",", $value);
             }
         }
@@ -61,6 +69,9 @@ abstract class FindInSetRelation extends HasOneOrMany {
         $foreign = $this->getForeignKeyName();
 
         if( is_array( $localKey ) ){
+            if( !is_null( $this->jsonColumn ) ){
+                $localKey = array_column( $localKey, $this->jsonColumn );
+            }
             $localKeyArr = $localKey;
             $localKey = implode( ',', $localKey );
         }else{
@@ -93,6 +104,9 @@ abstract class FindInSetRelation extends HasOneOrMany {
         foreach ($models as $model) {
             $localKey = $model->getAttribute($this->localKey);
             if( is_array( $localKey ) ){
+                if( !is_null( $this->jsonColumn ) ){
+                    $localKey = array_column( $localKey, $this->jsonColumn );
+                }
                 $localKey = implode(',', $localKey );
             }
             $dictionary = $this->buildDictionary($results, $localKey );

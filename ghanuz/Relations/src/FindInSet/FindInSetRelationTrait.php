@@ -12,7 +12,7 @@ trait FindInSetRelationTrait {
      * @param  string  $localKey
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function FindInSetMany($related, $localKey = null, $foreignKey = null, $index = null)
+    public function FindInSetMany($related, $localKey = null, $foreignKey = null, $index = null, $jsonColumn = null)
     {
         $instance = $this->newRelatedInstance($related);
 
@@ -21,7 +21,7 @@ trait FindInSetRelationTrait {
         $localKey = $localKey ?: $this->getKeyName();
 
         return new FindInSetMany(
-            $instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey, $index
+            $instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey, $index, $jsonColumn
         );
     }
 
@@ -33,7 +33,7 @@ trait FindInSetRelationTrait {
      * @param  string  $localKey
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function FindInSetOne($related, $localKey = null, $foreignKey = null, $index = null)
+    public function FindInSetOne($related, $localKey = null, $foreignKey = null, $index = null, $jsonColumn = null)
     {
         $instance = $this->newRelatedInstance($related);
 
@@ -42,7 +42,7 @@ trait FindInSetRelationTrait {
         $localKey = $localKey ?: $this->getKeyName();
 
         return new FindInSetOne(
-            $instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey, $index
+            $instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey, $index, $jsonColumn
         );
     }
 }

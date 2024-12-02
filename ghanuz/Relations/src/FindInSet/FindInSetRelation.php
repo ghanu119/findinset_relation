@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 abstract class FindInSetRelation extends HasOneOrMany {
 
     private $index;
+    private $ownerKey;
 
     public function __construct(Builder $query, Model $parent, $foreignKey, $localKey, $index = null){
         $this->index = $index;
+        $this->ownerKey = $localKey;
 
         parent::__construct($query, $parent, $foreignKey, $localKey);
     }

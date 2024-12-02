@@ -105,4 +105,15 @@ abstract class FindInSetRelation extends HasOneOrMany {
 
         return $models;
     }
+
+    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
+    {
+        if ($parentQuery->getQuery()->from == $query->getQuery()->from) {
+            return $this->getRelationExistenceQueryForSelfRelation($query, $parentQuery, $columns);
+        }
+
+        return $query->select($columns)->whereRaw(
+            'FIND_IN_SET('.$this->getQualifiedForeignKeyName().', ' . $this->parent->qualifyColumn( $this->ownerKey ) . ')'
+        );
+    }
 }
